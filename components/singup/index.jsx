@@ -1,6 +1,6 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { useState } from 'react';
-const { API_ENDPOINT } = process.env;
+const dev = process.env.NODE_ENV !== 'production';
 
 export default function Signup() {
     const [status, setStatus] = useState({
@@ -54,7 +54,7 @@ export default function Signup() {
         setStatus((prevStatus) => ({ ...prevStatus, submitting: true }));
         console.log(inputs);
 
-        fetch(`${API_ENDPOINT}/api/login`, {
+        fetch(dev ? "http://localhost:3000/api/login" : "https://nextjs-joaquin-materialize.vercel.app/api/login", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
