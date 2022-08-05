@@ -1,6 +1,6 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { useState } from 'react';
-const dev = process.env.API_ENDPOINT;
+const { API_ENDPOINT } = process.env;
 
 export default function Signup() {
     const [status, setStatus] = useState({
