@@ -106,6 +106,7 @@ export default function Ban() {
                     IPv4,
                 }),
             });
+            window.location.reload();
         } catch (err) {
             console.error(err);
         }
