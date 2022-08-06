@@ -21,7 +21,7 @@ export default function Ban(props) {
     useEffect(() => {
         if (banTime) {
             var timer = banTime, minutes, seconds;
-            const intervalId = setInterval(function () {
+            const updateTime = () => {
                 minutes = parseInt(timer / 60, 10);
                 seconds = parseInt(timer % 60, 10);
 
@@ -33,7 +33,9 @@ export default function Ban(props) {
                 if (--timer < 0) {
                     reset();
                 }
-            }, 1000);
+            }
+            updateTime();
+            const intervalId = setInterval(updateTime, 1000);
 
             return () => {
                 clearInterval(intervalId);
