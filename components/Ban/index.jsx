@@ -105,8 +105,11 @@ export default function Ban() {
                 body: JSON.stringify({
                     IPv4,
                 }),
+            }).then(() => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
             });
-            window.location.reload();
         } catch (err) {
             console.error(err);
         }
