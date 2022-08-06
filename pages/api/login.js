@@ -8,13 +8,15 @@ const upstash_password = process.env.UPSTASH_PASSWORD;
 const upstash_endpoint = process.env.UPSTASH_ENDPOINT;
 
 export default async function name(req, res) {
+  const { body } = req;
+  const { IPv4 } = body;
   if (req.method === 'POST') {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + Buffer.from(upstash_user + ":" + upstash_password).toString('base64'));
 
     const event = {
-      ip: req.connection.remoteAddress,
+      ip: IPv4,
       event_time: Date.now(),
       event_ttl: "5 minutes",
     };

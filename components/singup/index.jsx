@@ -1,5 +1,5 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 const dev = process.env.NODE_ENV !== 'production';
 
 export default function Signup() {
@@ -7,10 +7,6 @@ export default function Signup() {
         submitted: false,
         submitting: false,
         info: { error: false, msg: null },
-    });
-    const [inputs, setInputs] = useState({
-        "email": '',
-        message: '',
     });
 
     /**
@@ -49,19 +45,27 @@ export default function Signup() {
         });
     };
 
-    const handleOnSubmit = (e) => {
+    const handleOnSubmit = async (e) => {
         e.preventDefault();
         setStatus((prevStatus) => ({ ...prevStatus, submitting: true }));
-        console.log(inputs);
+        // console.log(inputs);
 
-        fetch(dev ? "http://localhost:3000/api/login" : "https://nextjs-joaquin-materialize.vercel.app/api/login", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-            body: JSON.stringify(inputs)
-        });
+        try {
+            const { IPv4 } = await (await fetch('https://geolocation-db.com/json/')).json();
+
+            fetch(dev ? "http://localhost:3000/api/login" : "https://nextjs-joaquin-materialize.vercel.app/api/login", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify({
+                    IPv4,
+                }),
+            });
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -79,7 +83,7 @@ export default function Signup() {
             <div>
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
             </div>
-            <form className="mt-8 space-y-6" onSubmit={handleOnSubmit}>
+            {/* <form className="mt-8 space-y-6" onSubmit={handleOnSubmit}>
                 <input type="hidden" name="remember" defaultValue="true" />
                 <div className="rounded-md shadow-sm -space-y-px">
                 <div>
@@ -112,20 +116,21 @@ export default function Signup() {
                     onChange={handleOnChange}
                     />
                 </div>
-                </div>
+                </div> */}
 
                 <div>
                 <button
+                    onClick={handleOnSubmit}
                     type="submit"
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                     <LockClosedIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
                     </span>
-                    Sign in
+                    Apply Ban
                 </button>
                 </div>
-            </form>
+            {/* </form> */}
             </div>
         </div>
         </>
