@@ -4,7 +4,7 @@ import { useEffect, useState    } from 'react';
 const dev = process.env.NODE_ENV !== 'production';
 const API_ENDPOINT = dev ? "http://localhost:3000/api/ban" : "https://nextjs-joaquin-materialize.vercel.app/api/ban";
 
-export default function Ban(props) {
+export default function Ban() {
     const [{ data: banTime, loading }, setBan] = useState({
         data: undefined,
         loading: true,
@@ -16,7 +16,6 @@ export default function Ban(props) {
         error: undefined,
     });
     const [timedown, setTimedown] = useState("");
-    const { reset } = props;
 
     useEffect(() => {
         if (banTime) {
@@ -31,7 +30,7 @@ export default function Ban(props) {
                 setTimedown(minutes + ":" + seconds);
 
                 if (--timer < 0) {
-                    reset();
+                    window.location.reload();
                 }
             }
             updateTime();
@@ -41,7 +40,7 @@ export default function Ban(props) {
                 clearInterval(intervalId);
             }
         }
-    }, [banTime, reset]);
+    }, [banTime]);
 
     useEffect(() => {
         const asyncRequest = async () => {
@@ -110,8 +109,8 @@ export default function Ban(props) {
                 }),
             }).then(() => {
                 setTimeout(() => {
-                    reset();
-                }, 300);
+                    window.location.reload();
+                }, 1000);
             });
         } catch (err) {
             console.error(err);

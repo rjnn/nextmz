@@ -5,12 +5,6 @@ import Ban from '../components/Ban'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
-  const [reset, setState] = useState({});
-
-  const resetHandler = () => {
-    setState({});
-  };
-
   return (
     <div className={styles.container}>
       <Head>
@@ -20,7 +14,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        {reset && <Ban reset={resetHandler}/>}
+        <Ban />
       </main>
 
       <footer className={styles.footer}>
