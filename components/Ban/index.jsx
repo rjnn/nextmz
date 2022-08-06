@@ -146,7 +146,7 @@ export default function Ban() {
                 {banTime && (
                 <div className='mt-10 text-center '>
                     <p className={"text-red-500"}>Your IP is banned.</p>
-                    <p className={"mt-2 text-gray-400"}>{`Remaining time: ${timedown}`}</p>
+                    <p className={"mt-2 text-gray-400"}>{`Remaining time: ${timedown || "--:--"}`}</p>
                 </div>
                 )}
                 </div>
