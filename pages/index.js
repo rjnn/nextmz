@@ -1,9 +1,16 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 import Ban from '../components/Ban'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const [, setState] = useState({});
+
+  const resetHandler = () => {
+    setState({});
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,7 +20,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Ban />
+        <Ban reset={resetHandler}/>
       </main>
 
       <footer className={styles.footer}>
