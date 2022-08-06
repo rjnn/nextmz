@@ -14,6 +14,11 @@ const getBanTime = async (IPv4) => {
     });
 
     const row = await fetchReq.json();
+
+    if (fetchReq.status === 200) {
+        return 0;
+    };
+
     return undefined || (row && (row[1] / 1000));
 }
 
@@ -30,17 +35,24 @@ export default function Ban() {
 
     useEffect(() => {
         if (banTime) {
-            let timer = banTime, minutes, seconds;
             const updateTime = async () => {
                 try {
-                    let timer = await getBanTime(IPv4);
-                    minutes = parseInt(timer / 60, 10);
-                    seconds = parseInt(timer % 60, 10);
+                    const timer = await getBanTime(IPv4);
+                    let minutes = parseInt(timer / 60, 10);
+                    let seconds = parseInt(timer % 60, 10);
 
                     minutes = minutes < 10 ? "0" + minutes : minutes;
                     seconds = seconds < 10 ? "0" + seconds : seconds;
 
                     setTimedown(minutes + ":" + seconds);
+
+                    if (timer === 0) {
+                        clearInterval();
+                        setBan({
+                            data: undefined,
+                            loading: false,
+                        });
+                    }
                 } catch (err) {
                     console.error(err);
                 }
