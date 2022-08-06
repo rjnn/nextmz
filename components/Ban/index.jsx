@@ -13,11 +13,11 @@ const getBanTime = async (IPv4) => {
           },
     });
 
-    const row = await fetchReq.json();
-
     if (fetchReq.status === 200) {
         return 0;
     };
+
+    const row = await fetchReq.json();
 
     return undefined || (row && (row[1] / 1000));
 }
