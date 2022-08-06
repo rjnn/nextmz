@@ -4,23 +4,35 @@ import { useEffect, useState    } from 'react';
 const dev = process.env.NODE_ENV !== 'production';
 const API_ENDPOINT = dev ? "http://localhost:3000/api/ban" : "https://nextjs-joaquin-materialize.vercel.app/api/ban";
 
+const getBanTime = async (IPv4) => {
+    const fetchReq = await fetch(`${API_ENDPOINT}/?IPv4=${IPv4}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+    });
+
+    const row = await fetchReq.json();
+    return undefined || (row && (row[1] / 1000));
+}
+
 export default function Ban() {
     const [{ data: banTime, loading }, setBan] = useState({
         data: undefined,
         loading: true,
-        error: undefined,
     });
     const [{ data: IPv4 }, setIP] = useState({
         loading: true,
         data: undefined,
-        error: undefined,
     });
     const [timedown, setTimedown] = useState("");
 
     useEffect(() => {
         if (banTime) {
-            var timer = banTime, minutes, seconds;
-            const updateTime = () => {
+            let timer = banTime, minutes, seconds;
+            const updateTime = async () => {
+                let timer = await getBanTime(IPv4);
                 minutes = parseInt(timer / 60, 10);
                 seconds = parseInt(timer % 60, 10);
 
@@ -28,10 +40,6 @@ export default function Ban() {
                 seconds = seconds < 10 ? "0" + seconds : seconds;
 
                 setTimedown(minutes + ":" + seconds);
-
-                if (--timer < 0) {
-                    window.location.reload();
-                }
             }
             updateTime();
             const intervalId = setInterval(updateTime, 1000);
@@ -40,7 +48,7 @@ export default function Ban() {
                 clearInterval(intervalId);
             }
         }
-    }, [banTime]);
+    }, [IPv4, banTime]);
 
     useEffect(() => {
         const asyncRequest = async () => {
@@ -48,7 +56,6 @@ export default function Ban() {
             setIP({
                 loading: false,
                 data: IPv4,
-                error: undefined,
             });
         }
 
@@ -70,7 +77,6 @@ export default function Ban() {
                     setBan({
                         data: false,
                         loading: false,
-                        error: undefined,
                     });
                 } else if (fetchReq.status === 401) {
                     const row = await fetchReq.json();
@@ -79,13 +85,11 @@ export default function Ban() {
                     setBan({
                         data: banTime / 1000,
                         loading: false,
-                        error: undefined,
                     });
                 } else {
                     setBan({
                         data: false,
                         loading: false,
-                        error: "Error",
                     });
                 }
             }
@@ -107,10 +111,13 @@ export default function Ban() {
                 body: JSON.stringify({
                     IPv4,
                 }),
-            }).then(() => {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+            }).then(async (banResponse) => {
+                const banRow = await banResponse.json();
+
+                // Five minutes
+                setBan({
+                    data: banRow.remaining_seconds / 1000,
+                })
             });
         } catch (err) {
             console.error(err);
@@ -138,7 +145,7 @@ export default function Ban() {
                 </button>
                 {banTime && (
                 <div className='mt-10 text-center '>
-                    <p className={"text-red-500"}>Your IP is already banned.</p>
+                    <p className={"text-red-500"}>Your IP is banned.</p>
                     <p className={"mt-2 text-gray-400"}>{`Remaining time: ${timedown}`}</p>
                 </div>
                 )}
