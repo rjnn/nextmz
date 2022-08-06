@@ -32,14 +32,18 @@ export default function Ban() {
         if (banTime) {
             let timer = banTime, minutes, seconds;
             const updateTime = async () => {
-                let timer = await getBanTime(IPv4);
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
+                try {
+                    let timer = await getBanTime(IPv4);
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
 
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                setTimedown(minutes + ":" + seconds);
+                    setTimedown(minutes + ":" + seconds);
+                } catch (err) {
+                    console.error(err);
+                }
             }
             updateTime();
             const intervalId = setInterval(updateTime, 1000);
