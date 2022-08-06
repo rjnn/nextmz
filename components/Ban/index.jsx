@@ -1,19 +1,8 @@
 import { LockClosedIcon } from '@heroicons/react/solid'
-import { useCallback, useEffect, useState    } from 'react';
+import { useEffect, useState    } from 'react';
 
 const dev = process.env.NODE_ENV !== 'production';
 const API_ENDPOINT = dev ? "http://localhost:3000/api/ban" : "https://nextjs-joaquin-materialize.vercel.app/api/ban";
-
-function msToTime(s) {
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-
-    return mins + ':' + secs + '.' + ms;
-  }
 
 export default function Ban() {
     const [{ data: banTime, loading }, setBan] = useState({
@@ -29,23 +18,25 @@ export default function Ban() {
     const [timedown, setTimedown] = useState("");
 
     useEffect(() => {
-        var timer = banTime, minutes, seconds;
-        const intervalId = setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
+        if (banTime) {
+            var timer = banTime, minutes, seconds;
+            const intervalId = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
 
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            setTimedown(minutes + ":" + seconds);
+                setTimedown(minutes + ":" + seconds);
 
-            if (--timer < 0) {
-                window.location.reload();
+                if (--timer < 0) {
+                    window.location.reload();
+                }
+            }, 1000);
+
+            return () => {
+                clearInterval(intervalId);
             }
-        }, 1000);
-
-        return () => {
-            clearInterval(intervalId);
         }
     }, [banTime]);
 
