@@ -13,13 +13,13 @@ const getBanTime = async (IPv4) => {
           },
     });
 
-    if (fetchReq.status === 200) {
+    if (fetchReq.status === 401) {
+        const row = await fetchReq.json();
+
+        return (row && (row[1] / 1000));
+    } else {
         return 0;
-    };
-
-    const row = await fetchReq.json();
-
-    return undefined || (row && (row[1] / 1000));
+    }
 }
 
 export default function Ban() {
@@ -46,7 +46,7 @@ export default function Ban() {
 
                     setTimedown(minutes + ":" + seconds);
 
-                    if (timer === 0) {
+                    if (timer <= 1) {
                         clearInterval();
                         setBan({
                             data: undefined,
